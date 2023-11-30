@@ -49,27 +49,27 @@ namespace API.Controllers
             return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItems, data));
         }
 
-
-         [HttpGet("{id}")]
-         [ProducesResponseType(StatusCodes.Status200OK)]
-         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [Cached(600)]
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
 
         public async Task<ActionResult<ProductToReturnDto>> GetProduct (int id){
 
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
             var product = await _productsRepo.GetEntityWithSpec(spec);
             if(product == null) return NotFound(new ApiResponse(404));
-            return _mapper.Map<Product, ProductToReturnDto>(product);
-           
+            return _mapper.Map<Product, ProductToReturnDto>(product);   
         }
 
+        [Cached(600)]
         [HttpGet("brands")]
         public async Task<ActionResult<ProductBrand>> GetProductBrands (){
             return Ok(await _productBrandRepo.ListAllAsync());
         }
 
-
-         [HttpGet("types")]
+        [Cached(600)]
+        [HttpGet("types")]
         public async Task<ActionResult<ProductBrand>> GetProductTypes (){
             return Ok(await _productTypeRepo.ListAllAsync());
         }
